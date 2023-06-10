@@ -1,8 +1,14 @@
 import pyxel
+from pyxelunicode import PyxelUnicode
 
 class App:
     def __init__(self):
-        pyxel.init(160, 120, title="sucaraction", fps=60)
+        pyxel.init(256, 224, title="sucaraction", fps=60)
+        pyxel.cls(0)
+        #load PyxelUnicode
+        self.font_path = "assets/misaki_gothic_2nd.ttf"
+        self.font_size = 8
+        self.pyuni = PyxelUnicode(self.font_path, self.font_size)
         #Opening menu
         self.op_menu_1 = "Start"
         self.op_menu_2 = "Load"
@@ -13,19 +19,16 @@ class App:
         self.mx = 0.0
         self.my = 0.0
         #Map status
-        self.game_start = False
+        self.is_game_start = False
         self.stage_flag = 1
         #load
-        pyxel.load("my_resource.pyxres")
-        pyxel.image(1).load(0, 0, "assets/genshin-Scaramouche-Wanderer.png")
-        self.scara_W = 32
-        self.scara_H = 32
+        pyxel.load("assets/my_resource.pyxres")
 
     def run(self):
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        if self.game_start == False:
+        if self.is_game_start == False:
             #タイトル画面での操作を記述
             if pyxel.btnp(pyxel.KEY_S):
                 self.menu_selected_item = (self.menu_selected_item + 1) % len(self.menu_items)
@@ -39,16 +42,16 @@ class App:
 
     def draw(self):
         #タイトル画面での描画を記述
-        if self.game_start == False:
+        if self.is_game_start == False:
             pyxel.cls(1)
             pyxel.blt(28, 30, 0, 0, 32, 96, 16, colkey=1)
             #menu button
             for i, item in enumerate(self.menu_items):
                 if i == self.menu_selected_item:
-                    pyxel.text(58, 65+10*i, "<"+item+">", 7)
-                    pyxel.blt(20, 65+10*i, 1, 0, 0, self.scara_W, self.scara_H, colkey=0)
+                    self.pyuni.text(120, 65+10*i, "<"+item+">")
+                    pyxel.blt(94, 65+10*i, 0, 0, 0, 24, 24)#, colkey=0)
                 else:
-                    pyxel.text(58, 65+10*i, item, 13)
+                    self.pyuni.text(120, 65+10*i, item, 13)
         else:
             #ゲーム本編での描画を実行
             self.game_main_draw(self)
@@ -66,7 +69,7 @@ class App:
         self.menu_selected_item_text = self.menu_items[self.menu_selected_item]
         if self.menu_selected_item_text == self.op_menu_1:
             #はじめから
-            self.game_start = True
+            self.is_game_start = True
         elif self.menu_selected_item_text == self.op_menu_2:
             #つづきから
             1*1
