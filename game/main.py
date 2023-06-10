@@ -18,11 +18,12 @@ class App:
         self.menu_items = [self.op_menu_1, self.op_menu_2, self.op_menu_3]
         self.menu_selected_item = 0
         #Player status
-        self.px = 0
-        self.py = 0
+        self.px = 50.0
+        self.py = 100.0
         #Map status
         self.is_game_start = False
         self.stage_flag = 1
+        self.gravity = -1
         #load
         pyxel.load("assets/my_resource.pyxres")
 
@@ -45,33 +46,42 @@ class App:
     def draw(self):
         #タイトル画面での描画を記述
         #ローカル変数定義
-        self.x = 112
-        self.blt_x = self.x-21
-        self.y = 120
-        self.yi = 20
-        self.blt_y = self.y-1
+        self.X = 110
+        self.BLT_X = self.X-21
+        self.Y = 120
+        self.YI = 20
+        self.BLT_Y = self.Y-1
         #処理
         if self.is_game_start == False:
             pyxel.cls(1)
             #menu button
             for i, item in enumerate(self.menu_items):
                 if i == self.menu_selected_item:
-                    self.pyuni_2x.text(self.x, self.y+self.yi*i, item)
-                    pyxel.blt(self.blt_x, self.blt_y+self.yi*i, 0, 0, 0, 17, 17, colkey=7)
+                    self.pyuni_2x.text(self.X, self.Y+self.YI*i, item)
+                    pyxel.blt(self.BLT_X, self.BLT_Y+self.YI*i, 0, 0, 0, 17, 17, colkey=7)
                 else:
-                    self.pyuni_2x.text(self.x, self.y+self.yi*i, item, 13)
+                    self.pyuni_2x.text(self.X, self.Y+self.YI*i, item, 13)
         else:
             #ゲーム本編での描画を実行
             self.main_draw()
 
     def main(self):
         #ゲーム本編での操作を記述
-        self.px = 10
+        #プレイヤーの操作
+        if pyxel.btn(pyxel.KEY_D or pyxel.KEY_RIGHT):
+            self.px += 1.5
+        elif pyxel.btn(pyxel.KEY_A or pyxel.KEY_LEFT):
+            self.px -= 1.5
+        if pyxel.btn(pyxel.KEY_SPACE or pyxel.KEY_UP):
+            self.py -= 1.5
+        elif pyxel.btn(pyxel.KEY_SHIFT or pyxel.KEY_DOWN):
+            self.py += 1.5
+        
 
     def main_draw(self):
         #ゲーム本編での描画を記述
         pyxel.cls(6)
-        #pyxel.blt()
+        pyxel.blt(self.px, self.py, 0, 18, 0, 16, 16)
 
     def handle_menu_selection(self):
         #opening menuでEnterを押した時の動作を記述
