@@ -10,16 +10,16 @@ class App:
         self.font_size = 8
         self.font_size_2x = 16
         self.pyuni = PyxelUnicode(self.font_path, self.font_size)
-        self.pyuni_capital = PyxelUnicode(self.font_path, self.font_size_2x)
+        self.pyuni_2x = PyxelUnicode(self.font_path, self.font_size_2x)
         #Opening menu
         self.op_menu_1 = "Start"
         self.op_menu_2 = "Load"
         self.op_menu_3 = "Quit"
         self.menu_items = [self.op_menu_1, self.op_menu_2, self.op_menu_3]
         self.menu_selected_item = 0
-        #User status
-        self.mx = 0.0
-        self.my = 0.0
+        #Player status
+        self.px = 0
+        self.py = 0
         #Map status
         self.is_game_start = False
         self.stage_flag = 1
@@ -37,39 +37,41 @@ class App:
             elif pyxel.btnp(pyxel.KEY_W):
                 self.menu_selected_item = (self.menu_selected_item - 1) % len(self.menu_items)
             elif pyxel.btnp(pyxel.KEY_RETURN):
-                self.handle_menu_selection(self)
+                self.handle_menu_selection()
         else:
             #ゲーム本編での操作を実行
-            self.game_main(self)
+            self.main()
 
     def draw(self):
         #タイトル画面での描画を記述
         #ローカル変数定義
-        self.x = 105
-        self.blt_x = 86
+        self.x = 112
+        self.blt_x = self.x-21
         self.y = 120
         self.yi = 20
+        self.blt_y = self.y-1
         #処理
         if self.is_game_start == False:
             pyxel.cls(1)
             #menu button
             for i, item in enumerate(self.menu_items):
                 if i == self.menu_selected_item:
-                    self.pyuni_capital.text(self.x, self.y+self.yi*i, item)
-                    pyxel.blt(self.blt_x, self.y+self.yi*i, 0, 0, 0, 17, 17, colkey=7)
+                    self.pyuni_2x.text(self.x, self.y+self.yi*i, item)
+                    pyxel.blt(self.blt_x, self.blt_y+self.yi*i, 0, 0, 0, 17, 17, colkey=7)
                 else:
-                    self.pyuni_capital.text(self.x, self.y+self.yi*i, item, 13)
+                    self.pyuni_2x.text(self.x, self.y+self.yi*i, item, 13)
         else:
             #ゲーム本編での描画を実行
-            self.game_main_draw(self)
+            self.main_draw()
 
-    def game_main(self):
+    def main(self):
         #ゲーム本編での操作を記述
-        1*1
+        self.px = 10
 
-    def game_main_draw(self):
+    def main_draw(self):
         #ゲーム本編での描画を記述
-        pyxel.cls(0)
+        pyxel.cls(6)
+        #pyxel.blt()
 
     def handle_menu_selection(self):
         #opening menuでEnterを押した時の動作を記述
