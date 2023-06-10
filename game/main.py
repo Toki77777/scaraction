@@ -17,9 +17,16 @@ class App:
         self.op_menu_3 = "Quit"
         self.menu_items = [self.op_menu_1, self.op_menu_2, self.op_menu_3]
         self.menu_selected_item = 0
+        #Key input status
+        self.key_right = False
+        self.key_left = False
+        self.key_up = False
+        self.key_down = False
         #Player status
         self.px = 50.0
         self.py = 100.0
+        self.player_x_speed = 1.5
+        self.player_y_speed = 1.5
         #Map status
         self.is_game_start = False
         self.stage_flag = 1
@@ -31,8 +38,10 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self):
+        self.key_input()
         if self.is_game_start == False:
             #タイトル画面での操作を記述
+            #爆速メニューになっちゃうからここはbtnpじゃないとダメ
             if pyxel.btnp(pyxel.KEY_S):
                 self.menu_selected_item = (self.menu_selected_item + 1) % len(self.menu_items)
             elif pyxel.btnp(pyxel.KEY_W):
@@ -67,21 +76,32 @@ class App:
 
     def main(self):
         #ゲーム本編での操作を記述
-        #プレイヤーの操作
-        if pyxel.btn(pyxel.KEY_D or pyxel.KEY_RIGHT):
-            self.px += 1.5
-        elif pyxel.btn(pyxel.KEY_A or pyxel.KEY_LEFT):
-            self.px -= 1.5
-        if pyxel.btn(pyxel.KEY_SPACE or pyxel.KEY_UP):
-            self.py -= 1.5
-        elif pyxel.btn(pyxel.KEY_SHIFT or pyxel.KEY_DOWN):
-            self.py += 1.5
-        
+        #プレイヤー本体の操作
+        if self.key_right and self.key_left:
+            pass
+        elif self.key_right:
+            self.px += self.player_x_speed
+        elif self.key_left:
+            self.px -= self.player_x_speed
+        if self.key_up and self.key_down:
+            pass
+        elif self.key_up:
+            self.py -= self.player_y_speed
+        elif self.key_down:
+            self.py += self.player_y_speed
+        #当たり判定縦
+        #当たり判定横
 
     def main_draw(self):
         #ゲーム本編での描画を記述
-        pyxel.cls(6)
-        pyxel.blt(self.px, self.py, 0, 18, 0, 16, 16)
+        pyxel.cls(13)
+        pyxel.blt(self.px, self.py, 0, 18, 1, 27, 34, colkey=3)
+
+    def key_input(self):
+        self.key_right = pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.KEY_RIGHT)
+        self.key_left = pyxel.btn(pyxel.KEY_A) or pyxel.btn(pyxel.KEY_LEFT)
+        self.key_up = pyxel.btn(pyxel.KEY_W) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_SPACE)
+        self.key_down = pyxel.btn(pyxel.KEY_S) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_SHIFT)
 
     def handle_menu_selection(self):
         #opening menuでEnterを押した時の動作を記述
@@ -91,7 +111,7 @@ class App:
             self.is_game_start = True
         elif self.menu_selected_item_text == self.op_menu_2:
             #つづきから
-            1*1
+            pass
         elif self.menu_selected_item_text == self.op_menu_3:
             pyxel.quit()
             #確認画面を表示してもいいかも
